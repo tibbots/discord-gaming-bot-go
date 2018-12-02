@@ -5,6 +5,7 @@ import (
 	env "github.com/tibbots/discord-gaming-bot-go/environment"
 	"github.com/tibbots/discord-gaming-bot-go/handler"
 	"github.com/tibbots/discord-gaming-bot-go/logging"
+	"github.com/tibbots/discord-gaming-bot-go/repository"
 	"os"
 	"os/signal"
 	"syscall"
@@ -21,11 +22,17 @@ func main() {
 		return
 	}
 
-	discord.AddHandler(handler.GetAddAccountCommandHandler().Handle)
-	discord.AddHandler(handler.GetCreateProfileCommandHandler().Handle)
-	discord.AddHandler(handler.GetDeleteProfileCommandHandler().Handle)
-	discord.AddHandler(handler.GetShowProfileCommandHandler().Handle)
-	discord.AddHandler(handler.GetHelpCommandHandler().Handle)
+	createProfileCommand := handler.GetCreateProfileCommandHandler(repository.GetProfileRepository())
+	deleteProfileCommand := handler.GetDeleteProfileCommandHandler()
+	showProfileCommand := handler.GetShowProfileCommandHandler()
+	addAccountCommand := handler.GetAddAccountCommandHandler()
+	helpCommand := handler.GetHelpCommandHandler()
+
+	discord.AddHandler(addAccountCommand.Handle)
+	discord.AddHandler(createProfileCommand.Handle)
+	discord.AddHandler(deleteProfileCommand.Handle)
+	discord.AddHandler(showProfileCommand.Handle)
+	discord.AddHandler(helpCommand.Handle)
 
 	err = discord.Open()
 	if err != nil {

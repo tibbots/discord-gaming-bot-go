@@ -8,12 +8,14 @@ import (
 )
 
 type firestoreProfileRepository struct {
-	firestore firestore.Firestore
+	firestore  firestore.Firestore
+	collection string
 }
 
 func GetFirestoreProfileRepository(firestore firestore.Firestore) ProfileRepository {
 	return &firestoreProfileRepository{
-		firestore: firestore,
+		firestore:  firestore,
+		collection: "profiles",
 	}
 }
 
@@ -28,7 +30,7 @@ func (r *firestoreProfileRepository) Persist(user *entity.Profile) error {
 	}
 	defer client.Close()
 
-	_, err = client.Collection("users").Doc(user.Identifier).Set(ctx, user)
+	_, err = client.Collection(r.collection).Doc(user.Identifier).Set(ctx, user)
 
 	return err
 }
@@ -43,7 +45,7 @@ func (r *firestoreProfileRepository) GetBy(profile *entity.Profile) (bool, *enti
 	}
 	defer client.Close()
 
-	foundProfileDoc, err := client.Collection("users").Doc(profile.Identifier).Get(ctx)
+	foundProfileDoc, err := client.Collection(r.collection).Doc(profile.Identifier).Get(ctx)
 	if err != nil {
 		logging.Error().
 			Err(err).
@@ -78,7 +80,7 @@ func (r *firestoreProfileRepository) Delete(profile *entity.Profile) error {
 	}
 	defer client.Close()
 
-	_, err = client.Collection("users").Doc(profile.Identifier).Delete(ctx)
+	_, err = client.Collection(r.collection).Doc(profile.Identifier).Delete(ctx)
 	if err != nil {
 		logging.Error().
 			Err(err).

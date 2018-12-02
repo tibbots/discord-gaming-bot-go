@@ -6,6 +6,7 @@ import (
 	"github.com/tibbots/discord-gaming-bot-go/environment"
 	"github.com/tibbots/discord-gaming-bot-go/logging"
 	"google.golang.org/api/option"
+	"path/filepath"
 )
 
 type firestoreClient struct {
@@ -15,7 +16,14 @@ type firestoreClient struct {
 var firestore Firestore
 
 func init() {
-	app, err := firebase.NewApp(context.Background(), nil, option.WithCredentialsFile(environment.GetEnvironment().FirestoreCredentials))
+	credentialsFile, err := filepath.Abs(environment.GetEnvironment().FirestoreCredentials)
+	if err != nil {
+		logging.Fatal().
+			Err(err).
+			Msg("unable to connect to firestore. Did you provide a valid path to JSON credentials?")
+	}
+
+	app, err := firebase.NewApp(context.Background(), nil, option.WithCredentialsFile(credentialsFile))
 	if err != nil {
 		logging.Fatal().
 			Err(err).

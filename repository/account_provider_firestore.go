@@ -9,7 +9,8 @@ import (
 )
 
 type firestoreAccountProviderRepository struct {
-	firestore firestore.Firestore
+	firestore  firestore.Firestore
+	collection string
 }
 
 func (r *firestoreAccountProviderRepository) getAll() ([]*entity.AccountProvider, error) {
@@ -23,7 +24,7 @@ func (r *firestoreAccountProviderRepository) getAll() ([]*entity.AccountProvider
 	}
 	defer client.Close()
 
-	providerDocs := client.Collection("providers").Documents(ctx)
+	providerDocs := client.Collection(r.collection).Documents(ctx)
 	foundProviders := make([]*entity.AccountProvider, 0)
 	defer providerDocs.Stop()
 	for {
@@ -47,6 +48,7 @@ func (r *firestoreAccountProviderRepository) getAll() ([]*entity.AccountProvider
 
 func GetFirestoreAccountProviderRepository(firestore firestore.Firestore) AccountProviderRepository {
 	return &firestoreAccountProviderRepository{
-		firestore: firestore,
+		firestore:  firestore,
+		collection: "platforms",
 	}
 }

@@ -9,12 +9,14 @@ import (
 )
 
 type firestoreAccountRepository struct {
-	firestore firestore.Firestore
+	firestore  firestore.Firestore
+	collection string
 }
 
 func GetFirestoreAccountRepository(firestore firestore.Firestore) AccountRepository {
 	return &firestoreAccountRepository{
-		firestore: firestore,
+		firestore:  firestore,
+		collection: "platform_accounts",
 	}
 }
 
@@ -29,7 +31,7 @@ func (a *firestoreAccountRepository) Persist(account *entity.Account) error {
 	}
 	defer client.Close()
 
-	_, err = client.Collection("accounts").Doc(account.Identifier).Set(ctx, account)
+	_, err = client.Collection(a.collection).Doc(account.Identifier).Set(ctx, account)
 
 	return err
 }
@@ -45,7 +47,7 @@ func (a *firestoreAccountRepository) GetByProfile(user *entity.Profile) ([]*enti
 	}
 	defer client.Close()
 
-	existingAccounts := client.Collection("accounts").Where("userId", "==", user.Identifier).Documents(ctx)
+	existingAccounts := client.Collection(a.collection).Where("userId", "==", user.Identifier).Documents(ctx)
 	foundAccounts := make([]*entity.Account, 0)
 	defer existingAccounts.Stop()
 	for {
@@ -92,7 +94,7 @@ func (a *firestoreAccountRepository) Delete(user *entity.Profile) error {
 	}
 
 	for _, foundAccount := range foundAccounts {
-		_, err := client.Collection("accounts").Doc(foundAccount.Identifier).Delete(ctx)
+		_, err := client.Collection(a.collection).Doc(foundAccount.Identifier).Delete(ctx)
 		if err != nil {
 			logging.Error().
 				Err(err).
