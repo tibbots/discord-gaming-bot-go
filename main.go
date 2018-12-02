@@ -21,7 +21,11 @@ func main() {
 		return
 	}
 
-	discord.AddHandler(handler.GetAddAccountHandler().Handle)
+	discord.AddHandler(handler.GetAddAccountCommandHandler().Handle)
+	discord.AddHandler(handler.GetCreateProfileCommandHandler().Handle)
+	discord.AddHandler(handler.GetDeleteProfileCommandHandler().Handle)
+	discord.AddHandler(handler.GetShowProfileCommandHandler().Handle)
+	discord.AddHandler(handler.GetHelpCommandHandler().Handle)
 
 	err = discord.Open()
 	if err != nil {

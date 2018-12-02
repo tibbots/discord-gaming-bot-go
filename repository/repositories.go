@@ -6,9 +6,9 @@ import (
 )
 
 type AccountRepository interface {
-	Persist(account entity.Account) error
-	GetByProfile(user entity.Profile) ([]*entity.Account, error)
-	Delete(user entity.Profile) error
+	Persist(account *entity.Account) error
+	GetByProfile(user *entity.Profile) ([]*entity.Account, error)
+	Delete(user *entity.Profile) error
 }
 
 type AccountProviderRepository interface {
@@ -16,9 +16,9 @@ type AccountProviderRepository interface {
 }
 
 type ProfileRepository interface {
-	Persist(user entity.Profile) error
-	GetBy(user entity.Profile) (bool, *entity.Profile, error)
-	Delete(user entity.Profile) error
+	Persist(user *entity.Profile) error
+	GetBy(user *entity.Profile) (bool, *entity.Profile, error)
+	Delete(user *entity.Profile) error
 }
 
 func GetAccountRepository() AccountRepository {

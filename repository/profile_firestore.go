@@ -17,7 +17,7 @@ func GetFirestoreProfileRepository(firestore firestore.Firestore) ProfileReposit
 	}
 }
 
-func (r *firestoreProfileRepository) Persist(user entity.Profile) error {
+func (r *firestoreProfileRepository) Persist(user *entity.Profile) error {
 	ctx := context.Background()
 	client, err := r.firestore.App().Firestore(ctx)
 	if err != nil {
@@ -32,7 +32,7 @@ func (r *firestoreProfileRepository) Persist(user entity.Profile) error {
 
 	return err
 }
-func (r *firestoreProfileRepository) GetBy(profile entity.Profile) (bool, *entity.Profile, error) {
+func (r *firestoreProfileRepository) GetBy(profile *entity.Profile) (bool, *entity.Profile, error) {
 	ctx := context.Background()
 	client, err := r.firestore.App().Firestore(ctx)
 	if err != nil {
@@ -67,7 +67,7 @@ func (r *firestoreProfileRepository) GetBy(profile entity.Profile) (bool, *entit
 	return true, foundProfile, nil
 }
 
-func (r *firestoreProfileRepository) Delete(profile entity.Profile) error {
+func (r *firestoreProfileRepository) Delete(profile *entity.Profile) error {
 	ctx := context.Background()
 	client, err := r.firestore.App().Firestore(ctx)
 	if err != nil {

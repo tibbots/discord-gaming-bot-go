@@ -18,7 +18,7 @@ func GetFirestoreAccountRepository(firestore firestore.Firestore) AccountReposit
 	}
 }
 
-func (a *firestoreAccountRepository) Persist(account entity.Account) error {
+func (a *firestoreAccountRepository) Persist(account *entity.Account) error {
 	ctx := context.Background()
 	client, err := a.firestore.App().Firestore(ctx)
 	if err != nil {
@@ -34,7 +34,7 @@ func (a *firestoreAccountRepository) Persist(account entity.Account) error {
 	return err
 }
 
-func (a *firestoreAccountRepository) GetByProfile(user entity.Profile) ([]*entity.Account, error) {
+func (a *firestoreAccountRepository) GetByProfile(user *entity.Profile) ([]*entity.Account, error) {
 	ctx := context.Background()
 	client, err := a.firestore.App().Firestore(ctx)
 	if err != nil {
@@ -75,7 +75,7 @@ func (a *firestoreAccountRepository) GetByProfile(user entity.Profile) ([]*entit
 	return foundAccounts, nil
 }
 
-func (a *firestoreAccountRepository) Delete(user entity.Profile) error {
+func (a *firestoreAccountRepository) Delete(user *entity.Profile) error {
 	ctx := context.Background()
 	client, err := a.firestore.App().Firestore(ctx)
 	if err != nil {

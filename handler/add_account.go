@@ -3,15 +3,33 @@ package handler
 import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/tibbots/discord-gaming-bot-go/logging"
+	"strings"
 )
 
-type addAccountHandler struct {
+type addAccountCommandHandler struct {
 }
 
-func (h *addAccountHandler) Handle(s *discordgo.Session, m *discordgo.MessageCreate) {
+var addAccountCommandHandlerInstance *addAccountCommandHandler
+
+func init() {
+	addAccountCommandHandlerInstance = &addAccountCommandHandler{}
+}
+
+func (h *addAccountCommandHandler) Handle(s *discordgo.Session, m *discordgo.MessageCreate) {
+	event := GetMessageCreatedEvent(s, m)
+	if !event.shouldBeHandled() && !event.isTalkingToMe() && !event.isCommand("add account") {
+		return
+	}
+
+	fields := strings.Fields(event.GetPlainContent())
+	if len(fields) != 2 {
+
+		return
+	}
+
 	logging.Info().Msg("some message has been created")
 }
 
-func GetAddAccountHandler() MessageCreatedHandler {
-	return &addAccountHandler{}
+func GetAddAccountCommandHandler() MessageCreatedHandler {
+	return addAccountCommandHandlerInstance
 }
