@@ -24,18 +24,20 @@ func main() {
 
 	createProfileCommand := handler.CreateCreateProfileCommandHandler(repository.GetProfileRepository())
 	deleteProfileCommand := handler.CreateDeleteProfileCommandHandler(repository.GetProfileRepository())
-	showProfileCommand := handler.GetShowProfileCommandHandler()
+	showProfileCommand := handler.CreateShowProfileCommandHandler()
 	addAccountCommand := handler.CreateAddAccountCommandHandler(
 		repository.GetAccountRepository(),
 		repository.GetProfileRepository(),
 		repository.GetPlatformRepository())
-	helpCommand := handler.GetHelpCommandHandler()
+	helpCommand := handler.CreateHelpCommandHandler()
+	versionCommand := handler.CreateVersionCommandHandler()
 
 	discord.AddHandler(addAccountCommand.Handle)
 	discord.AddHandler(createProfileCommand.Handle)
 	discord.AddHandler(deleteProfileCommand.Handle)
 	discord.AddHandler(showProfileCommand.Handle)
 	discord.AddHandler(helpCommand.Handle)
+	discord.AddHandler(versionCommand.Handle)
 
 	err = discord.Open()
 	if err != nil {

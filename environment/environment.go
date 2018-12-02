@@ -32,7 +32,7 @@ func init() {
 
 	env := &environment{
 		ProjectName:          "discord-gaming-bot",
-		ProjectVersion:       "0.2.0",
+		ProjectVersion:       "0.1.0",
 		ProjectUrl:           "https://github.com/tibbots/discord-gaming-bot-go",
 		BotToken:             token,
 		FirestoreCredentials: credentials,

@@ -19,7 +19,7 @@ func (h *helpCommandHandler) Handle(s *discordgo.Session, m *discordgo.MessageCr
 
 }
 
-func GetHelpCommandHandler() MessageCreatedHandler {
+func CreateHelpCommandHandler() MessageCreatedHandler {
 	return &helpCommandHandler{
 		helpMessage: &discordgo.MessageEmbed{
 			Title: "Discord Gaming Bot Manual",

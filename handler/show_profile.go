@@ -18,6 +18,6 @@ func (h *showProfileCommandHandler) Handle(s *discordgo.Session, m *discordgo.Me
 	logging.Info().Msg("some message has been created")
 }
 
-func GetShowProfileCommandHandler() MessageCreatedHandler {
+func CreateShowProfileCommandHandler() MessageCreatedHandler {
 	return showProfileCommandHandlerInstance
 }
