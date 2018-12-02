@@ -23,6 +23,7 @@ func (h *deleteProfileCommandHandler) Handle(s *discordgo.Session, m *discordgo.
 			Err(err).
 			Msg("delete profile command failed")
 		_, _ = s.ChannelMessageSend(m.ChannelID, "Oops, something went wrong on my side. Unfortunately i was not able to delete your profile, please try again later.")
+		return
 	} else {
 		_, _ = s.ChannelMessageSend(m.ChannelID, "Profile successfully deleted!")
 	}

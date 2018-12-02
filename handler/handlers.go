@@ -37,6 +37,16 @@ func (m *MessageCreatedEvent) GetPlainContent() string {
 	return m.plainContent
 }
 
+func (m *MessageCreatedEvent) GetTargetedUser() *discordgo.User {
+	for _, mention := range m.message.Mentions {
+		if mention.ID == m.state.State.User.ID {
+			continue
+		}
+		return mention
+	}
+	return m.message.Author
+}
+
 func (m *MessageCreatedEvent) isSentByMe() bool {
 	return m.message.ID == m.state.State.User.ID
 }
