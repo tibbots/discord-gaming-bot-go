@@ -25,7 +25,10 @@ func main() {
 	createProfileCommand := handler.CreateCreateProfileCommandHandler(repository.GetProfileRepository())
 	deleteProfileCommand := handler.CreateDeleteProfileCommandHandler(repository.GetProfileRepository())
 	showProfileCommand := handler.GetShowProfileCommandHandler()
-	addAccountCommand := handler.GetAddAccountCommandHandler()
+	addAccountCommand := handler.CreateAddAccountCommandHandler(
+		repository.GetAccountRepository(),
+		repository.GetProfileRepository(),
+		repository.GetPlatformRepository())
 	helpCommand := handler.GetHelpCommandHandler()
 
 	discord.AddHandler(addAccountCommand.Handle)

@@ -13,7 +13,7 @@ type firestorePlatformRepository struct {
 	collection string
 }
 
-func (r *firestorePlatformRepository) getAll() ([]*entity.Platform, error) {
+func (r *firestorePlatformRepository) GetAll() ([]*entity.Platform, error) {
 	ctx := context.Background()
 	client, err := r.firestore.App().Firestore(ctx)
 	if err != nil {

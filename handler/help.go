@@ -1,12 +1,12 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"github.com/tibbots/discord-gaming-bot-go/environment"
 )
 
 type helpCommandHandler struct {
-	helpMessages *discordgo.MessageEmbed
+	helpMessage *discordgo.MessageEmbed
 }
 
 func (h *helpCommandHandler) Handle(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -15,41 +15,39 @@ func (h *helpCommandHandler) Handle(s *discordgo.Session, m *discordgo.MessageCr
 		return
 	}
 
-	if h.helpMessages == nil {
-		h.helpMessages = &discordgo.MessageEmbed{
+	_, _ = s.ChannelMessageSendEmbed(m.ChannelID, h.helpMessage)
+
+}
+
+func GetHelpCommandHandler() MessageCreatedHandler {
+	return &helpCommandHandler{
+		helpMessage: &discordgo.MessageEmbed{
 			Title: "Discord Gaming Bot Manual",
 			Footer: &discordgo.MessageEmbedFooter{
-				Text: "made by tibbot.org",
+				Text: "reach us at " + environment.GetEnvironment().ProjectUrl,
 			},
 
 			Fields: []*discordgo.MessageEmbedField{
 				{
 					Name:  "Creating a Profile",
-					Value: fmt.Sprintf("@%s create profile (or via direct message)", s.State.User.Username),
+					Value: "@MyNameOnYourServer create profile (or via direct message)",
 				},
 				{
 					Name:  "Deleting a Profile",
-					Value: fmt.Sprintf("@%s delete profile (or via direct message)", s.State.User.Username),
+					Value: "@MyNameOnYourServer delete profile (or via direct message)",
 				},
 				{
 					Name:  "Inspecting your Profile",
-					Value: fmt.Sprintf("@%s show profile (or via direct message)", s.State.User.Username),
+					Value: "@MyNameOnYourServer show profile (or via direct message)",
 				},
 				{
 					Name:  "Inspecting another persons Profile",
-					Value: fmt.Sprintf("@%s show profile @YourFriend (or via direct message)", s.State.User.Username),
+					Value: "@MyNameOnYourServer show profile @YourFriend (or via direct message)",
 				}, {
 					Name:  "Adding an platform account (like Steam, Origin or whatsoever)",
-					Value: fmt.Sprintf("@%s add account [platform] [account-id] (or via direct message)", s.State.User.Username),
+					Value: "@MyNameOnYourServer add account [platform] [account-id] (or via direct message)",
 				},
 			},
-		}
+		},
 	}
-
-	_, _ = s.ChannelMessageSendEmbed(m.ChannelID, h.helpMessages)
-
-}
-
-func GetHelpCommandHandler() MessageCreatedHandler {
-	return &helpCommandHandler{}
 }

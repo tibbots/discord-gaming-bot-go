@@ -12,7 +12,7 @@ type AccountRepository interface {
 }
 
 type PlatformRepository interface {
-	getAll() ([]*entity.Platform, error)
+	GetAll() ([]*entity.Platform, error)
 }
 
 type ProfileRepository interface {
