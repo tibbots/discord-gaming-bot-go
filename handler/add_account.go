@@ -4,7 +4,6 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/tibbots/discord-gaming-bot-go/entity"
 	"github.com/tibbots/discord-gaming-bot-go/environment"
-	"github.com/tibbots/discord-gaming-bot-go/logging"
 	"github.com/tibbots/discord-gaming-bot-go/repository"
 	"strings"
 )
@@ -32,9 +31,7 @@ func (h *addAccountCommandHandler) Handle(s *discordgo.Session, m *discordgo.Mes
 
 	platforms, err := h.platformRepository.GetAll()
 	if err != nil {
-		logging.Error().
-			Err(err).
-			Msg("add account command failed")
+		event.LogError(err, "add account command failed")
 		return
 	}
 
@@ -58,19 +55,13 @@ func (h *addAccountCommandHandler) Handle(s *discordgo.Session, m *discordgo.Mes
 
 	err = h.profileRepository.Persist(profile)
 	if err != nil {
-		logging.Error().
-			Err(err).
-			Msg("add account command failed")
-		_, _ = s.ChannelMessageSendEmbed(m.ChannelID, h.failureMessage)
+		event.LogErrorAndRespond(err, "add account command failed")
 		return
 	}
 
 	_ = h.accountRepository.Persist(account)
 	if err != nil {
-		logging.Error().
-			Err(err).
-			Msg("add account command failed")
-		_, _ = s.ChannelMessageSendEmbed(m.ChannelID, h.failureMessage)
+		event.LogErrorAndRespond(err, "add account command failed")
 		return
 	}
 
