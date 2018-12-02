@@ -47,11 +47,13 @@ func main() {
 		return
 	}
 
-	logging.Info().Str("bot", env.GetEnvironment().ProjectName).Str("version", env.GetEnvironment().ProjectVersion).Msg("bot has been successfully started.")
+	logging.Info().Str("bot", env.GetEnvironment().ProjectName).Str("version", env.GetEnvironment().ProjectVersion).Msg("bot is up and running.")
+
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
 	<-sc
 
+	logging.Info().Str("bot", env.GetEnvironment().ProjectName).Str("version", env.GetEnvironment().ProjectVersion).Msg("bot is shutting down.")
 	// Cleanly close down the Discord session.
 	discord.Close()
 

@@ -44,21 +44,25 @@ func (h *showProfileCommandHandler) Handle(s *discordgo.Session, m *discordgo.Me
 		platformIdToPlatform[platform.Identifier] = platform
 	}
 
-	accountFields := make([]*discordgo.MessageEmbedField, len(accounts))
+	accountFields := make([]*discordgo.MessageEmbedField, 0)
 	for _, account := range accounts {
 		accountFields = append(accountFields, &discordgo.MessageEmbedField{
-			Name:  platformIdToPlatform[account.PlatformId].Name + fmt.Sprintf("(Command: %s)", platformIdToPlatform[account.PlatformId].Command),
+			Name:  platformIdToPlatform[account.PlatformId].Name + fmt.Sprintf(" (%s)", platformIdToPlatform[account.PlatformId].Command),
 			Value: account.PlatformAccountId,
 		})
 	}
 
-	_, _ = s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
+	_, err = s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
 		Description: fmt.Sprintf("Gaming Profile of <@%s>", profile.DiscordUserId),
 		Fields:      accountFields,
 		Footer: &discordgo.MessageEmbedFooter{
 			Text: "reach us at " + environment.GetEnvironment().ProjectUrl,
 		},
 	})
+
+	if err != nil {
+		event.LogError(err, "show profile command failed")
+	}
 }
 
 func CreateShowProfileCommandHandler(accountRepository repository.AccountRepository,
