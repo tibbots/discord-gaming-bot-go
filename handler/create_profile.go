@@ -12,7 +12,7 @@ type createProfileCommandHandler struct {
 
 func (h *createProfileCommandHandler) Handle(s *discordgo.Session, m *discordgo.MessageCreate) {
 	event := GetMessageCreatedEvent(s, m)
-	if !event.shouldBeHandled() && !event.isTalkingToMe() && !event.isCommand("create profile") {
+	if !event.shouldBeHandled() || !event.isTalkingToMe() || !event.isCommand("create profile") {
 		return
 	}
 
@@ -22,10 +22,9 @@ func (h *createProfileCommandHandler) Handle(s *discordgo.Session, m *discordgo.
 	} else {
 		_, _ = s.ChannelMessageSend(m.ChannelID, "Profile successfully created!")
 	}
-
 }
 
-func GetCreateProfileCommandHandler(profileRepository repository.ProfileRepository) MessageCreatedHandler {
+func CreateCreateProfileCommandHandler(profileRepository repository.ProfileRepository) MessageCreatedHandler {
 	return &createProfileCommandHandler{
 		profileRepository: profileRepository,
 	}

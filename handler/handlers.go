@@ -27,10 +27,10 @@ func (m *MessageCreatedEvent) GetPlainContent() string {
 	if m.plainContent == "lazy" {
 		m.plainContent = m.message.Content
 		for _, user := range m.message.Mentions {
-			m.plainContent = strings.NewReplacer(
+			m.plainContent = strings.TrimSpace(strings.NewReplacer(
 				"<@"+user.ID+">", "",
 				"<@!"+user.ID+">", "",
-			).Replace(m.plainContent)
+			).Replace(m.plainContent))
 		}
 	}
 
@@ -67,7 +67,7 @@ func (m *MessageCreatedEvent) isMentioningMe() bool {
 }
 
 func (m *MessageCreatedEvent) isCommand(command string) bool {
-	return strings.HasPrefix(m.plainContent, command)
+	return strings.HasPrefix(m.GetPlainContent(), command)
 }
 
 func (m *MessageCreatedEvent) shouldBeHandled() bool {

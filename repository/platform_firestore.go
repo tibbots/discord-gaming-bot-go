@@ -8,12 +8,12 @@ import (
 	"google.golang.org/api/iterator"
 )
 
-type firestoreAccountProviderRepository struct {
+type firestorePlatformRepository struct {
 	firestore  firestore.Firestore
 	collection string
 }
 
-func (r *firestoreAccountProviderRepository) getAll() ([]*entity.AccountProvider, error) {
+func (r *firestorePlatformRepository) getAll() ([]*entity.Platform, error) {
 	ctx := context.Background()
 	client, err := r.firestore.App().Firestore(ctx)
 	if err != nil {
@@ -25,7 +25,7 @@ func (r *firestoreAccountProviderRepository) getAll() ([]*entity.AccountProvider
 	defer client.Close()
 
 	providerDocs := client.Collection(r.collection).Documents(ctx)
-	foundProviders := make([]*entity.AccountProvider, 0)
+	foundProviders := make([]*entity.Platform, 0)
 	defer providerDocs.Stop()
 	for {
 		doc, err := providerDocs.Next()
@@ -38,7 +38,7 @@ func (r *firestoreAccountProviderRepository) getAll() ([]*entity.AccountProvider
 				Msg("unable to query account data")
 			return nil, err
 		}
-		foundProvider := &entity.AccountProvider{}
+		foundProvider := &entity.Platform{}
 		err = doc.DataTo(foundProvider)
 		foundProviders = append(foundProviders, foundProvider)
 	}
@@ -46,8 +46,8 @@ func (r *firestoreAccountProviderRepository) getAll() ([]*entity.AccountProvider
 	return foundProviders, nil
 }
 
-func GetFirestoreAccountProviderRepository(firestore firestore.Firestore) AccountProviderRepository {
-	return &firestoreAccountProviderRepository{
+func GetFirestoreAccountProviderRepository(firestore firestore.Firestore) PlatformRepository {
+	return &firestorePlatformRepository{
 		firestore:  firestore,
 		collection: "platforms",
 	}

@@ -10,7 +10,7 @@ type Profile struct {
 
 func CreateProfileFromUser(user *discordgo.User) *Profile {
 	return &Profile{
-		Identifier:      user.Username + "#" + user.Discriminator,
+		Identifier:      user.ID,
 		DiscordUserId:   user.ID,
 		DiscordUserName: user.Username + "#" + user.Discriminator,
 	}

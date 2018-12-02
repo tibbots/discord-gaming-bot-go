@@ -17,7 +17,7 @@ func init() {
 
 func (h *addAccountCommandHandler) Handle(s *discordgo.Session, m *discordgo.MessageCreate) {
 	event := GetMessageCreatedEvent(s, m)
-	if !event.shouldBeHandled() && !event.isTalkingToMe() && !event.isCommand("add account") {
+	if !event.shouldBeHandled() || !event.isTalkingToMe() || !event.isCommand("add account") {
 		return
 	}
 

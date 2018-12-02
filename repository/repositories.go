@@ -11,8 +11,8 @@ type AccountRepository interface {
 	Delete(user *entity.Profile) error
 }
 
-type AccountProviderRepository interface {
-	getAll() ([]*entity.AccountProvider, error)
+type PlatformRepository interface {
+	getAll() ([]*entity.Platform, error)
 }
 
 type ProfileRepository interface {
@@ -29,6 +29,6 @@ func GetProfileRepository() ProfileRepository {
 	return GetFirestoreProfileRepository(firestore.GetFirestore())
 }
 
-func GetAccountProviderRepository() AccountProviderRepository {
+func GetPlatformRepository() PlatformRepository {
 	return GetFirestoreAccountProviderRepository(firestore.GetFirestore())
 }

@@ -22,8 +22,8 @@ func main() {
 		return
 	}
 
-	createProfileCommand := handler.GetCreateProfileCommandHandler(repository.GetProfileRepository())
-	deleteProfileCommand := handler.GetDeleteProfileCommandHandler()
+	createProfileCommand := handler.CreateCreateProfileCommandHandler(repository.GetProfileRepository())
+	deleteProfileCommand := handler.CreateDeleteProfileCommandHandler(repository.GetProfileRepository())
 	showProfileCommand := handler.GetShowProfileCommandHandler()
 	addAccountCommand := handler.GetAddAccountCommandHandler()
 	helpCommand := handler.GetHelpCommandHandler()

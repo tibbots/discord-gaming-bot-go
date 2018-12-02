@@ -1,6 +1,6 @@
 package entity
 
-type AccountProvider struct {
+type Platform struct {
 	Identifier string
 	Name       string
 	Command    string
