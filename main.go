@@ -50,7 +50,7 @@ func main() {
 	logging.Info().Str("bot", env.GetEnvironment().ProjectName).Str("version", env.GetEnvironment().ProjectVersion).Msg("bot is up and running.")
 
 	sc := make(chan os.Signal, 1)
-	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, os.Kill)
+	signal.Notify(sc, syscall.SIGINT, syscall.SIGTERM, os.Interrupt)
 	<-sc
 
 	logging.Info().Str("bot", env.GetEnvironment().ProjectName).Str("version", env.GetEnvironment().ProjectVersion).Msg("bot is shutting down.")

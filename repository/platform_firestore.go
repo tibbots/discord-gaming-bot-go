@@ -40,6 +40,12 @@ func (r *firestorePlatformRepository) GetAll() ([]*entity.Platform, error) {
 		}
 		foundProvider := &entity.Platform{}
 		err = doc.DataTo(foundProvider)
+		if err != nil {
+			logging.Error().
+				Err(err).
+				Msg("unable to map queried platform")
+			return nil, err
+		}
 		foundProviders = append(foundProviders, foundProvider)
 	}
 

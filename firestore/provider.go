@@ -37,15 +37,6 @@ func init() {
 func (f *firestoreClient) App() *firebase.App {
 	return f.store
 }
-func (f *firestoreClient) Users() {
-	_, err := f.store.Firestore(context.Background())
-	if err != nil {
-		logging.Fatal().
-			Err(err).
-			Msg("unable to connect to firestore.")
-	}
-	return
-}
 
 func GetFirestore() Firestore {
 	return firestore
