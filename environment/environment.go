@@ -15,12 +15,16 @@ type environment struct {
 }
 
 // Environment singleton
-var Get *environment
+var environmentInstance *environment
 
 var (
 	token       string
 	credentials string
 )
+
+func GetEnvironment() *environment {
+	return environmentInstance
+}
 
 // inits environment
 func init() {
@@ -33,7 +37,7 @@ func init() {
 		BotToken:             token,
 		FirestoreCredentials: credentials,
 	}
-	Get = env
+	environmentInstance = env
 }
 
 func initParams() {

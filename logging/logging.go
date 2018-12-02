@@ -28,6 +28,6 @@ func Error() *zerolog.Event {
 
 func apply(event *zerolog.Event) *zerolog.Event {
 	return event.
-		Str("bot", env.Get.ProjectName).
-		Str("version", env.Get.ProjectVersion)
+		Str("bot", env.GetEnvironment().ProjectName).
+		Str("version", env.GetEnvironment().ProjectVersion)
 }
