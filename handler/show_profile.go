@@ -12,15 +12,23 @@ import (
 type showProfileCommandHandler struct {
 	accountRepository  repository.AccountRepository
 	platformRepository repository.PlatformRepository
+	profileRepository  repository.ProfileRepository
 }
 
 func (h *showProfileCommandHandler) Handle(s *discordgo.Session, m *discordgo.MessageCreate) {
 	event := GetMessageCreatedEvent(s, m)
-	if !event.shouldBeHandled() || !event.isTalkingToMe() || (!event.isCommand("show profile") || !event.isCommand("inspect profile")) {
+	if !event.shouldBeHandled() || !event.isTalkingToMe() || (!event.isCommand("show profile") && !event.isCommand("inspect profile")) {
 		return
 	}
 
 	profile := entity.CreateProfileFromUser(event.GetTargetedUser())
+
+	exists, _, _ := h.profileRepository.GetBy(profile)
+	if !exists {
+		_, _ = s.ChannelMessageSend(m.ChannelID, fmt.Sprintf("Looks like <@%s> has not yet registered a Profile", profile.DiscordUserId))
+		return
+	}
+
 	accounts, err := h.accountRepository.GetByProfile(profile)
 	if err != nil {
 		logging.Error().
@@ -52,8 +60,8 @@ func (h *showProfileCommandHandler) Handle(s *discordgo.Session, m *discordgo.Me
 	}
 
 	_, _ = s.ChannelMessageSendEmbed(m.ChannelID, &discordgo.MessageEmbed{
-		Title:  fmt.Sprintf("Gaming Profile of <@%s>", profile.DiscordUserId),
-		Fields: accountFields,
+		Description: fmt.Sprintf("Gaming Profile of <@%s>", profile.DiscordUserId),
+		Fields:      accountFields,
 		Footer: &discordgo.MessageEmbedFooter{
 			Text: "reach us at " + environment.GetEnvironment().ProjectUrl,
 		},
@@ -61,9 +69,10 @@ func (h *showProfileCommandHandler) Handle(s *discordgo.Session, m *discordgo.Me
 }
 
 func CreateShowProfileCommandHandler(accountRepository repository.AccountRepository,
-	platformRepository repository.PlatformRepository) MessageCreatedHandler {
+	platformRepository repository.PlatformRepository, profileRepository repository.ProfileRepository) MessageCreatedHandler {
 	return &showProfileCommandHandler{
 		accountRepository:  accountRepository,
 		platformRepository: platformRepository,
+		profileRepository:  profileRepository,
 	}
 }

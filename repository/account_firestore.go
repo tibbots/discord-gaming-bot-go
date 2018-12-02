@@ -36,7 +36,7 @@ func (a *firestoreAccountRepository) Persist(account *entity.Account) error {
 	return err
 }
 
-func (a *firestoreAccountRepository) GetByProfile(user *entity.Profile) ([]*entity.Account, error) {
+func (a *firestoreAccountRepository) GetByProfile(profile *entity.Profile) ([]*entity.Account, error) {
 	ctx := context.Background()
 	client, err := a.firestore.App().Firestore(ctx)
 	if err != nil {
@@ -47,7 +47,7 @@ func (a *firestoreAccountRepository) GetByProfile(user *entity.Profile) ([]*enti
 	}
 	defer client.Close()
 
-	existingAccounts := client.Collection(a.collection).Where("userId", "==", user.Identifier).Documents(ctx)
+	existingAccounts := client.Collection(a.collection).Where("ProfileId", "==", profile.Identifier).Documents(ctx)
 	foundAccounts := make([]*entity.Account, 0)
 	defer existingAccounts.Stop()
 	for {
@@ -77,7 +77,7 @@ func (a *firestoreAccountRepository) GetByProfile(user *entity.Profile) ([]*enti
 	return foundAccounts, nil
 }
 
-func (a *firestoreAccountRepository) Delete(user *entity.Profile) error {
+func (a *firestoreAccountRepository) Delete(profile *entity.Profile) error {
 	ctx := context.Background()
 	client, err := a.firestore.App().Firestore(ctx)
 	if err != nil {
@@ -88,7 +88,7 @@ func (a *firestoreAccountRepository) Delete(user *entity.Profile) error {
 	}
 	defer client.Close()
 
-	foundAccounts, err := a.GetByProfile(user)
+	foundAccounts, err := a.GetByProfile(profile)
 	if err != nil {
 		return err
 	}
@@ -98,7 +98,7 @@ func (a *firestoreAccountRepository) Delete(user *entity.Profile) error {
 		if err != nil {
 			logging.Error().
 				Err(err).
-				Msg("unable to delete account data for user " + user.Identifier)
+				Msg("unable to delete account data for user " + profile.Identifier)
 			return err
 		}
 	}

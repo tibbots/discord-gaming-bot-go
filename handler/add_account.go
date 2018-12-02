@@ -24,7 +24,7 @@ func (h *addAccountCommandHandler) Handle(s *discordgo.Session, m *discordgo.Mes
 		return
 	}
 
-	fields := strings.Fields(event.GetPlainContent())
+	fields := strings.Fields(strings.NewReplacer("add account", "").Replace(event.GetPlainContent()))
 	if len(fields) != 2 {
 		_, _ = s.ChannelMessageSend(m.ChannelID, "Please provide a platform (eg Steam) and an account-id (eg yourSteamId) for adding an account.")
 		return
