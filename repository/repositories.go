@@ -21,6 +21,11 @@ type ProfileRepository interface {
 	Delete(user *entity.Profile) error
 }
 
+type ServerRepository interface {
+	Persist(server *entity.Server) error
+	Delete(server *entity.Server) error
+}
+
 func GetAccountRepository() AccountRepository {
 	return GetFirestoreAccountRepository(firestore.GetFirestore())
 }
@@ -31,4 +36,8 @@ func GetProfileRepository() ProfileRepository {
 
 func GetPlatformRepository() PlatformRepository {
 	return GetFirestoreAccountProviderRepository(firestore.GetFirestore())
+}
+
+func GetServerRepository() ServerRepository {
+	return GetFirestoreServerRepository(firestore.GetFirestore())
 }

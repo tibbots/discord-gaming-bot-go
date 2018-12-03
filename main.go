@@ -31,6 +31,8 @@ func main() {
 		repository.GetPlatformRepository())
 	helpCommand := handler.CreateHelpCommandHandler()
 	versionCommand := handler.CreateVersionCommandHandler()
+	trackBotJoins := handler.CreateTrackBotJoinsCommand(repository.GetServerRepository())
+	trackBotLeaves := handler.CreateTrackBotLeaveCommand(repository.GetServerRepository())
 
 	discord.AddHandler(addAccountCommand.Handle)
 	discord.AddHandler(createProfileCommand.Handle)
@@ -38,6 +40,8 @@ func main() {
 	discord.AddHandler(showProfileCommand.Handle)
 	discord.AddHandler(helpCommand.Handle)
 	discord.AddHandler(versionCommand.Handle)
+	discord.AddHandler(trackBotJoins.Handle)
+	discord.AddHandler(trackBotLeaves.Handle)
 
 	err = discord.Open()
 	if err != nil {
