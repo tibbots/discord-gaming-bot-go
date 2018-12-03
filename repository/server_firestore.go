@@ -25,6 +25,12 @@ func (r *firestoreServerRepository) Persist(server *entity.Server) error {
 	defer client.Close()
 
 	serverDoc, err := client.Collection(r.collection).Doc(server.Identifier).Get(ctx)
+	if err != nil {
+		logging.Error().
+			Err(err).
+			Msg("error retrieving server data")
+		// dont return here, as err is of type NotFound, although serverDoc is non-nil
+	}
 	if !serverDoc.Exists() {
 		_, err = client.Collection(r.collection).Doc(server.Identifier).Create(ctx, server)
 		if err != nil {
@@ -36,6 +42,12 @@ func (r *firestoreServerRepository) Persist(server *entity.Server) error {
 	} else {
 		existingServer := &entity.Server{}
 		err = serverDoc.DataTo(existingServer)
+		if err != nil {
+			logging.Error().
+				Err(err).
+				Msg("unable to map server data")
+			return err
+		}
 
 		existingServer.Region = server.Region
 		existingServer.Members = server.Members
@@ -66,10 +78,22 @@ func (r *firestoreServerRepository) Delete(server *entity.Server) error {
 	defer client.Close()
 
 	serverDoc, err := client.Collection(r.collection).Doc(server.Identifier).Get(ctx)
+	if err != nil {
+		logging.Error().
+			Err(err).
+			Msg("error retrieving server data")
+		// dont return here, as err is of type NotFound, although serverDoc is non-nil
+	}
 	existingServer := server
 	if serverDoc.Exists() {
 		existingServer = &entity.Server{}
 		err = serverDoc.DataTo(existingServer)
+		if err != nil {
+			logging.Error().
+				Err(err).
+				Msg("unable to map server data")
+			return err
+		}
 
 		existingServer.Region = server.Region
 		existingServer.Members = server.Members
