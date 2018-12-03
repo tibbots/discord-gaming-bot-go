@@ -16,11 +16,12 @@ type Server struct {
 }
 
 func CreateServer(guild *discordgo.Guild) *Server {
+	now := time.Now().Unix()
 	return &Server{
 		Identifier: guild.ID,
 		Name:       guild.Name,
-		Created:    time.Now().Unix(),
-		Modified:   time.Now().Unix(),
+		Created:    now,
+		Modified:   now,
 		Members:    guild.MemberCount,
 		Region:     guild.Region,
 	}

@@ -25,12 +25,6 @@ func (r *firestoreServerRepository) Persist(server *entity.Server) error {
 	defer client.Close()
 
 	serverDoc, err := client.Collection(r.collection).Doc(server.Identifier).Get(ctx)
-	if err != nil {
-		logging.Error().
-			Err(err).
-			Msg("unable to connect to firestore.")
-		return err
-	}
 	if !serverDoc.Exists() {
 		_, err = client.Collection(r.collection).Doc(server.Identifier).Create(ctx, server)
 		if err != nil {
@@ -43,6 +37,9 @@ func (r *firestoreServerRepository) Persist(server *entity.Server) error {
 		existingServer := &entity.Server{}
 		err = serverDoc.DataTo(existingServer)
 
+		existingServer.Region = server.Region
+		existingServer.Members = server.Members
+		existingServer.Name = server.Name
 		existingServer.Deleted = 0
 		existingServer.Modified = time.Now().Unix()
 		_, err = client.Collection(r.collection).Doc(server.Identifier).Set(ctx, existingServer)
@@ -69,10 +66,18 @@ func (r *firestoreServerRepository) Delete(server *entity.Server) error {
 	defer client.Close()
 
 	serverDoc, err := client.Collection(r.collection).Doc(server.Identifier).Get(ctx)
-	existingServer := &entity.Server{}
-	err = serverDoc.DataTo(existingServer)
+	existingServer := server
+	if serverDoc.Exists() {
+		existingServer = &entity.Server{}
+		err = serverDoc.DataTo(existingServer)
+
+		existingServer.Region = server.Region
+		existingServer.Members = server.Members
+		existingServer.Name = server.Name
+	}
+
 	existingServer.Deleted = time.Now().Unix()
-	existingServer.Modified = time.Now().Unix()
+	existingServer.Modified = existingServer.Deleted
 
 	_, err = client.Collection(r.collection).Doc(server.Identifier).Set(ctx, existingServer)
 	if err != nil {
