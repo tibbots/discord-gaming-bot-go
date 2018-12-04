@@ -11,6 +11,7 @@ WORKDIR /root
 COPY --from=builder /go/src/app/app .
 
 ENV TOKEN token
+ENV TOKEN_DISCORD_BOTS discordBotsToken
 ENV CREDENTIALS /path/to/firestore/credentials
 
 CMD ["./app"]

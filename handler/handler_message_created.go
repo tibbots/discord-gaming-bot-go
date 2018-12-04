@@ -104,6 +104,10 @@ func (m *MessageCreatedEvent) isCommand(command string) bool {
 	return strings.HasPrefix(m.GetPlainContent(), command)
 }
 
+func (m *MessageCreatedEvent) isFromAdmin() bool {
+	return m.message.Author.ID == "171919271272644609"
+}
+
 func (m *MessageCreatedEvent) shouldBeHandled() bool {
 	return !m.isSentByMe() && !m.isSentByBot()
 }

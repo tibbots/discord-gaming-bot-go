@@ -24,6 +24,7 @@ type ProfileRepository interface {
 type ServerRepository interface {
 	Persist(server *entity.Server) error
 	Delete(server *entity.Server) error
+	GetAll() ([]*entity.Server, error)
 }
 
 func GetAccountRepository() AccountRepository {

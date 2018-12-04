@@ -10,6 +10,7 @@ type Server struct {
 	Name       string
 	Region     string
 	Members    int
+	Channels   int
 	Created    int64
 	Modified   int64
 	Deleted    int64
@@ -24,5 +25,6 @@ func CreateServer(guild *discordgo.Guild) *Server {
 		Modified:   now,
 		Members:    guild.MemberCount,
 		Region:     guild.Region,
+		Channels:   len(guild.Channels),
 	}
 }

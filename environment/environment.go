@@ -12,14 +12,16 @@ type environment struct {
 	ProjectUrl           string
 	BotToken             string
 	FirestoreCredentials string
+	DiscordBotsToken     string
 }
 
 // Environment singleton
 var environmentInstance *environment
 
 var (
-	token       string
-	credentials string
+	token            string
+	credentials      string
+	tokenDiscordBots string
 )
 
 func GetEnvironment() *environment {
@@ -32,10 +34,11 @@ func init() {
 
 	env := &environment{
 		ProjectName:          "discord-gaming-bot",
-		ProjectVersion:       "0.1.0",
+		ProjectVersion:       "0.1.1",
 		ProjectUrl:           "https://github.com/tibbots/discord-gaming-bot-go",
 		BotToken:             token,
 		FirestoreCredentials: credentials,
+		DiscordBotsToken:     tokenDiscordBots,
 	}
 	environmentInstance = env
 }
@@ -43,6 +46,7 @@ func init() {
 func initParams() {
 	flag.StringVar(&token, "token", "", "bot token")
 	flag.StringVar(&credentials, "credentials", "", "firestore credentials")
+	flag.StringVar(&tokenDiscordBots, "tokenDiscordBots", "", "discord-bots token")
 	flag.Parse()
 
 	if token == "" {
@@ -51,5 +55,9 @@ func initParams() {
 
 	if credentials == "" {
 		credentials = os.Getenv("CREDENTIALS")
+	}
+
+	if tokenDiscordBots == "" {
+		tokenDiscordBots = os.Getenv("TOKEN_DISCORD_BOTS")
 	}
 }

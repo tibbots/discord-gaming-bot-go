@@ -13,6 +13,34 @@ type firestoreServerRepository struct {
 	collection string
 }
 
+func (r *firestoreServerRepository) GetAll() ([]*entity.Server, error) {
+	ctx := context.Background()
+	client, err := r.firestore.App().Firestore(ctx)
+	if err != nil {
+		logging.Error().
+			Err(err).
+			Msg("unable to connect to firestore.")
+		return nil, err
+	}
+	defer client.Close()
+
+	serverDocs, err := client.Collection(r.collection).Documents(ctx).GetAll()
+	if err != nil {
+		logging.Error().
+			Err(err).
+			Msg("unable to fetch server data")
+		return nil, err
+	}
+	foundServers := make([]*entity.Server, 0)
+	for _, doc := range serverDocs {
+		newServer := &entity.Server{}
+		_ = doc.DataTo(newServer)
+		foundServers = append(foundServers, newServer)
+	}
+
+	return foundServers, nil
+}
+
 func (r *firestoreServerRepository) Persist(server *entity.Server) error {
 	ctx := context.Background()
 	client, err := r.firestore.App().Firestore(ctx)
@@ -28,7 +56,7 @@ func (r *firestoreServerRepository) Persist(server *entity.Server) error {
 	if err != nil {
 		logging.Error().
 			Err(err).
-			Msg("error retrieving server data")
+			Msg("unable to fetch server")
 		// dont return here, as err is of type NotFound, although serverDoc is non-nil
 	}
 	if !serverDoc.Exists() {
@@ -51,6 +79,7 @@ func (r *firestoreServerRepository) Persist(server *entity.Server) error {
 
 		existingServer.Region = server.Region
 		existingServer.Members = server.Members
+		existingServer.Channels = server.Channels
 		existingServer.Name = server.Name
 		existingServer.Deleted = 0
 		existingServer.Modified = time.Now().Unix()
@@ -81,7 +110,7 @@ func (r *firestoreServerRepository) Delete(server *entity.Server) error {
 	if err != nil {
 		logging.Error().
 			Err(err).
-			Msg("error retrieving server data")
+			Msg("unable to fetch server data")
 		// dont return here, as err is of type NotFound, although serverDoc is non-nil
 	}
 	existingServer := server
@@ -97,6 +126,7 @@ func (r *firestoreServerRepository) Delete(server *entity.Server) error {
 
 		existingServer.Region = server.Region
 		existingServer.Members = server.Members
+		existingServer.Channels = server.Channels
 		existingServer.Name = server.Name
 	}
 
