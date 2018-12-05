@@ -3,7 +3,7 @@ package handler
 import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/tibbots/discord-gaming-bot-go/entity"
-	"github.com/tibbots/discord-gaming-bot-go/environment"
+	"github.com/tibbots/discord-gaming-bot-go/help"
 	"github.com/tibbots/discord-gaming-bot-go/repository"
 	"strings"
 )
@@ -12,9 +12,6 @@ type addAccountCommandHandler struct {
 	accountRepository  repository.AccountRepository
 	profileRepository  repository.ProfileRepository
 	platformRepository repository.PlatformRepository
-	failureMessage     *discordgo.MessageEmbed
-	successMessage     *discordgo.MessageEmbed
-	supportedPlatforms *discordgo.MessageEmbed
 }
 
 func (h *addAccountCommandHandler) Handle(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -46,7 +43,7 @@ func (h *addAccountCommandHandler) Handle(s *discordgo.Session, m *discordgo.Mes
 
 	if matchingPlatform == nil {
 		_, _ = s.ChannelMessageSend(m.ChannelID, "I am sorry, i dont know anything about a platform called '"+selectedPlatform+"'")
-		_, _ = s.ChannelMessageSendEmbed(m.ChannelID, h.supportedPlatforms)
+		_, _ = s.ChannelMessageSendEmbed(m.ChannelID, help.GetMessages().SupportedPlatforms)
 		return
 	}
 
@@ -65,7 +62,9 @@ func (h *addAccountCommandHandler) Handle(s *discordgo.Session, m *discordgo.Mes
 		return
 	}
 
-	_, _ = s.ChannelMessageSendEmbed(m.ChannelID, h.successMessage)
+	_, _ = s.ChannelMessageSend(m.ChannelID, "Yippie, your account has been successfully added! Now you could proceed with the following:")
+	_, _ = s.ChannelMessageSendEmbed(m.ChannelID, help.GetMessages().NextSteps)
+	_, _ = s.ChannelMessageSend(m.ChannelID, help.GetMessages().LinkPreviewHint)
 }
 
 func CreateAddAccountCommandHandler(accountRepository repository.AccountRepository,
@@ -74,60 +73,5 @@ func CreateAddAccountCommandHandler(accountRepository repository.AccountReposito
 		accountRepository:  accountRepository,
 		profileRepository:  profileRepository,
 		platformRepository: platformRepository,
-		failureMessage: &discordgo.MessageEmbed{
-			Title:       "Oops, something went horribly wrong on my side!",
-			Description: "Stay tuned, our developers will have a look at it.",
-			Footer: &discordgo.MessageEmbedFooter{
-				Text: "reach us at " + environment.GetEnvironment().ProjectUrl,
-			},
-		},
-
-		successMessage: &discordgo.MessageEmbed{
-			Title: "Your Account has been successfully added. Next steps to take:",
-			Footer: &discordgo.MessageEmbedFooter{
-				Text: "reach us at " + environment.GetEnvironment().ProjectUrl,
-			},
-
-			Fields: []*discordgo.MessageEmbedField{
-				{
-					Name:  "Ask me in any channel to show your personal or a friends Profile (or direct message me)",
-					Value: "@MyNameOnYourServer show profile @YourFriend ",
-				},
-			},
-		},
-
-		supportedPlatforms: &discordgo.MessageEmbed{
-			Title: "Supported Platforms are:",
-			Footer: &discordgo.MessageEmbedFooter{
-				Text: "reach us at " + environment.GetEnvironment().ProjectUrl,
-			},
-
-			Fields: []*discordgo.MessageEmbedField{
-				{
-					Name:  "Steam",
-					Value: "add account steam yourSteamId",
-				},
-				{
-					Name:  "Uplay",
-					Value: "add account uplay yourUplayId",
-				},
-				{
-					Name:  "Origin",
-					Value: "add account origin yourOriginId",
-				},
-				{
-					Name:  "Battlenet",
-					Value: "add account battlenet yourBattlenetId",
-				},
-				{
-					Name:  "Microsoft Id",
-					Value: "add account xbox yourXboxId",
-				},
-				{
-					Name:  "Playstation Network",
-					Value: "add account psn yourPsnId",
-				},
-			},
-		},
 	}
 }

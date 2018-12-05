@@ -2,11 +2,10 @@ package handler
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/tibbots/discord-gaming-bot-go/environment"
+	"github.com/tibbots/discord-gaming-bot-go/help"
 )
 
 type helpCommandHandler struct {
-	helpMessage *discordgo.MessageEmbed
 }
 
 func (h *helpCommandHandler) Handle(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -15,39 +14,12 @@ func (h *helpCommandHandler) Handle(s *discordgo.Session, m *discordgo.MessageCr
 		return
 	}
 
-	_, _ = s.ChannelMessageSendEmbed(m.ChannelID, h.helpMessage)
+	_, _ = s.ChannelMessageSendEmbed(m.ChannelID, help.GetMessages().Help)
+	_, _ = s.ChannelMessageSendEmbed(m.ChannelID, help.GetMessages().SupportedPlatforms)
+	_, _ = s.ChannelMessageSend(m.ChannelID, help.GetMessages().LinkPreviewHint)
 
 }
 
 func CreateHelpCommandHandler() MessageCreatedHandler {
-	return &helpCommandHandler{
-		helpMessage: &discordgo.MessageEmbed{
-			Title: "Discord Gaming Bot Manual",
-			Footer: &discordgo.MessageEmbedFooter{
-				Text: "reach us at " + environment.GetEnvironment().ProjectUrl,
-			},
-
-			Fields: []*discordgo.MessageEmbedField{
-				{
-					Name:  "Creating a Profile",
-					Value: "@MyNameOnYourServer create profile (or via direct message)",
-				},
-				{
-					Name:  "Deleting a Profile",
-					Value: "@MyNameOnYourServer delete profile (or via direct message)",
-				},
-				{
-					Name:  "Inspecting your Profile",
-					Value: "@MyNameOnYourServer show profile (or via direct message)",
-				},
-				{
-					Name:  "Inspecting another persons Profile",
-					Value: "@MyNameOnYourServer show profile @YourFriend (or via direct message)",
-				}, {
-					Name:  "Adding an platform account (like Steam, Origin or whatsoever)",
-					Value: "@MyNameOnYourServer add account [platform] [account-id] (or via direct message)",
-				},
-			},
-		},
-	}
+	return &helpCommandHandler{}
 }

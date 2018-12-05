@@ -5,6 +5,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"github.com/tibbots/discord-gaming-bot-go/entity"
 	"github.com/tibbots/discord-gaming-bot-go/environment"
+	"github.com/tibbots/discord-gaming-bot-go/help"
 	"github.com/tibbots/discord-gaming-bot-go/repository"
 )
 
@@ -59,6 +60,8 @@ func (h *showProfileCommandHandler) Handle(s *discordgo.Session, m *discordgo.Me
 			Text: "reach us at " + environment.GetEnvironment().ProjectUrl,
 		},
 	})
+
+	_, _ = s.ChannelMessageSend(m.ChannelID, help.GetMessages().LinkPreviewHint)
 
 	if err != nil {
 		event.LogError(err, "show profile command failed")

@@ -20,9 +20,9 @@ func (h *deleteProfileCommandHandler) Handle(s *discordgo.Session, m *discordgo.
 	if err != nil {
 		event.LogErrorAndRespond(err, "delete profile command failed")
 		return
-	} else {
-		_, _ = s.ChannelMessageSend(m.ChannelID, "Profile successfully deleted!")
 	}
+
+	_, _ = s.ChannelMessageSend(m.ChannelID, "No problem, your profile has been successfully deleted!")
 }
 
 func CreateDeleteProfileCommandHandler(profileRepository repository.ProfileRepository) MessageCreatedHandler {

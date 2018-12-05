@@ -2,7 +2,7 @@ package handler
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/tibbots/discord-gaming-bot-go/environment"
+	"github.com/tibbots/discord-gaming-bot-go/help"
 	"github.com/tibbots/discord-gaming-bot-go/logging"
 	"strings"
 )
@@ -15,7 +15,6 @@ type MessageCreatedEvent struct {
 	state        *discordgo.Session
 	message      *discordgo.MessageCreate
 	plainContent string
-	errorMessage *discordgo.MessageEmbed
 }
 
 func GetMessageCreatedEvent(s *discordgo.Session, m *discordgo.MessageCreate) *MessageCreatedEvent {
@@ -23,13 +22,6 @@ func GetMessageCreatedEvent(s *discordgo.Session, m *discordgo.MessageCreate) *M
 		state:        s,
 		message:      m,
 		plainContent: "lazy",
-		errorMessage: &discordgo.MessageEmbed{
-			Title:       "Oops, something went horribly wrong on my side!",
-			Description: "Stay tuned, our developers will have a look at it.",
-			Footer: &discordgo.MessageEmbedFooter{
-				Text: "reach us at " + environment.GetEnvironment().ProjectUrl,
-			},
-		},
 	}
 }
 
@@ -41,7 +33,7 @@ func (m *MessageCreatedEvent) LogError(err error, message string) {
 
 func (m *MessageCreatedEvent) LogErrorAndRespond(err error, message string) {
 	m.LogError(err, message)
-	_, err = m.state.ChannelMessageSendEmbed(m.message.ChannelID, m.errorMessage)
+	_, err = m.state.ChannelMessageSendEmbed(m.message.ChannelID, help.GetMessages().Error)
 	if err != nil {
 		m.LogError(err, message)
 	}
